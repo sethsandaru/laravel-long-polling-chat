@@ -7,6 +7,11 @@
 
 require('./bootstrap');
 
+// import css, necessary lib
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/chat.css';
+import 'v-toaster/dist/v-toaster.css';
+
 window.Vue = require('vue');
 
 /**
@@ -14,9 +19,12 @@ window.Vue = require('vue');
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import App from './components/ChatComponent.vue';
+import Toaster from 'v-toaster'
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.use(Toaster, {timeout: 3000});
 
-const app = new Vue({
-    el: '#app'
+new Vue({
+    el: '#app',
+    render: h => h(App)
 });

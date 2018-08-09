@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('v1')->group(function () {
+    Route::get('Message/RetrieveNewMess', 'Api\MessageController@RetrieveNewMess');
+
+    Route::post('Message/PostText', 'Api\MessageController@PostText');
+    Route::post('Message/PostAttachment', 'Api\MessageController@PostAttachment');
+});
