@@ -75,4 +75,38 @@ class MessageController extends Controller
 
         return response()->json(['status' => 'ok', 'message' => $new_mess->toArray()]);
     }
+
+    public function PostImage(Request $rq) {
+        $rules = [
+            'Name' => 'required',
+            'Image' => 'required|image|max:5000',
+        ];
+
+        $valid = Validator::make($rq->all(), $rules);
+        if ($valid->fails()) {
+            return response()->json(['error' => $valid->errors()->first()]);
+        }
+
+        // solving upload
+        $file = $rq->file('Image');
+        if (!$file->isValid()) {
+            return response()->json(['error' => "Upload image to server failed, please try again."]);
+        }
+
+        // upload file
+        $path = "/uploads/attachments/";
+        $new_file_name = "ATTR_" . rand(0,999999). "_" . time() . "_" . md5($rq->post('Name')) . "." . $file->getClientOriginalExtension();
+        $file->move(public_path($path), $new_file_name);
+
+        // post new text
+        $new_mess = new Message;
+        $new_mess->Name = $rq->post('Name');
+        $new_mess->Type = 'image';
+        $new_mess->Attachment = $path . $new_file_name;
+        $new_mess->CreatedDate = now()->format("Y-m-d H:i:s");
+        $new_mess->save();
+        $new_mess->refresh();
+
+        return response()->json(['status' => 'ok', 'message' => $new_mess->toArray()]);
+    }
 }

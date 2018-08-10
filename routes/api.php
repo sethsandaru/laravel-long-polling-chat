@@ -21,5 +21,5 @@ Route::prefix('v1')->group(function () {
     Route::get('Message/RetrieveNewMess', 'Api\MessageController@RetrieveNewMess');
 
     Route::post('Message/PostText', 'Api\MessageController@PostText');
-    Route::post('Message/PostAttachment', 'Api\MessageController@PostAttachment');
+    Route::post('Message/PostImage', 'Api\MessageController@PostImage');
 });

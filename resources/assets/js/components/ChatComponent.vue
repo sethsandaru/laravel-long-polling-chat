@@ -6,14 +6,26 @@
 
                 <div class="type_msg">
                     <div class="input_msg_write">
-                        <input type="text"
-                               class="write_msg form-control"
-                               placeholder="Type a message"
-                               v-model="textMessage"
-                               @keyup.enter="postMess" />
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <a href="javascript:void(0)" @click="sendAttachment">
+                                        <i class="fa fa-image"></i>
+                                    </a>
+                                </span>
+                            </div>
+                            <input type="text" class="write_msg form-control"
+                                   placeholder="Type a message"
+                                   v-model="textMessage"
+                                   @keyup.enter="postMess">
+                        </div>
                         <button class="msg_send_btn" type="button" @click="postMess">
                             <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                         </button>
+
+                        <input type="file" style="display: none"
+                               accept="image/jpeg, image/png, image/gif"
+                               id="fileAttachment" @change="doUploadAttachment">
                     </div>
                 </div>
             </div>
@@ -119,7 +131,11 @@
                     .then(result => {
                         var data = result.data;
                         if (_.isEmpty(data) || !data.status) {
-                            self.$toaster.error("Failed to post a new message");
+                            if (data.error) {
+                                self.$toaster.error(data.error);
+                            } else {
+                                self.$toaster.error("Failed to post a new message");
+                            }
                             return;
                         }
 
@@ -128,7 +144,47 @@
                             $(".msg_history").scrollTop(99999999); // scroll to bottom after append your posted mess
                         }, 200);
                     });
-            }
+            },
+            sendAttachment() {
+                $("#fileAttachment").val(null).click();
+            },
+            doUploadAttachment(e) {
+                var file = e.target.files[0];
+                if (file.type.indexOf("image") < 0)
+                {
+                    $("#fileAttachment").val(null);
+                    this.$toaster.error("Your selected file is not an image.");
+                    return;
+                }
+
+                // do upload
+                var postData = new FormData();
+                postData.append("Name", this.name);
+                postData.append("Image", file);
+
+                var self = this;
+                axios.post(base_url + "api/v1/Message/PostImage", postData, {headers: {'Content-Type': "multipart/form-data"}})
+                    .then(result => {
+                        var data = result.data;
+                        if (_.isEmpty(data) || !data.status) {
+                            if (data.error) {
+                                self.$toaster.error(data.error);
+                            } else {
+                                self.$toaster.error("Failed to post a new message");
+                            }
+                            return;
+                        }
+
+                        self.messages.unshift(data.message);
+                        setTimeout(() => {
+                            $(".msg_history").scrollTop(99999999); // scroll to bottom after append your posted mess
+                        }, 200);
+                    })
+                    .catch(err => {
+                        $("#fileAttachment").val(null);
+                        this.$toaster.error("Upload image failed, please try again.");
+                    });
+            },
         },
         computed: {
             _() {

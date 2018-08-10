@@ -8,7 +8,7 @@ With this example, I think you'll be able to build your own chat system more ama
 - Chat (text, image)
 - Real-time retrieve message by using Long Polling method.
 
-## Technologies used
+## Technologies/Libraries used
 - PHP 7+
 - Laravel 5.6 (latest)
 - Laravel Mix
