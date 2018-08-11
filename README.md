@@ -23,7 +23,7 @@ With this example, I think you'll be able to build your own chat system more ama
 - Run: `php artisan migrate`
 - Now you can go to the project's public path too test :D
 
-Note: you don't need to build vueJS again. I'll build the latest one for you after any commit.
+Note: you don't need to build vueJS files again. I'll build the latest one for you after any commit.
 
 ## Finally
 Visit my blog at: [Seth Phat's Blog](https://sethphat.com)

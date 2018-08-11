@@ -37,7 +37,6 @@ class MessageController extends Controller
         // retrieve user name
         $name = $rq->get('Name');
 
-
         // check for new message every seconds...
         $has_new_mess = Message::GetMessageAfter($last_ajax_call, $name);
         while ($has_new_mess === false && $time < $time_limit) {
@@ -58,12 +57,7 @@ class MessageController extends Controller
         $name = $rq->get('Name');
 
         // post new text
-        $new_mess = new Message;
-        $new_mess->Name = "SethPhat_System";
-        $new_mess->Type = 'system';
-        $new_mess->Message = "User $name has just joined our room.";
-        $new_mess->CreatedDate = now()->format("Y-m-d H:i:s");
-        $new_mess->save();
+        Message::PostNewMessage('system', "User $name has just joined our room.", 'SethPhat_System');
     }
 
     public function PostText(Request $rq) {
@@ -78,12 +72,9 @@ class MessageController extends Controller
         }
 
         // post new text
-        $new_mess = new Message;
-        $new_mess->Name = $rq->post('Name');
-        $new_mess->Message = $rq->post('Message');
-        $new_mess->CreatedDate = now()->format("Y-m-d H:i:s");
-        $new_mess->save();
-        $new_mess->refresh();
+        $name = $rq->post('Name');
+        $mess = $rq->post('Message');
+        $new_mess = Message::PostNewMessage('text', $mess, $name);
 
         return response()->json(['status' => 'ok', 'message' => $new_mess->toArray()]);
     }
@@ -111,13 +102,8 @@ class MessageController extends Controller
         $file->move(public_path($path), $new_file_name);
 
         // post new text
-        $new_mess = new Message;
-        $new_mess->Name = $rq->post('Name');
-        $new_mess->Type = 'image';
-        $new_mess->Attachment = $path . $new_file_name;
-        $new_mess->CreatedDate = now()->format("Y-m-d H:i:s");
-        $new_mess->save();
-        $new_mess->refresh();
+        $name = $rq->post('Name');
+        $new_mess = Message::PostNewMessage('image', $path . $new_file_name, $name);
 
         return response()->json(['status' => 'ok', 'message' => $new_mess->toArray()]);
     }

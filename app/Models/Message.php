@@ -29,4 +29,25 @@ class Message extends Model
 
         return $query;
     }
+
+    public static function PostNewMessage($type = 'text', $content, $name) {
+        $mess = new self;
+
+        // set data
+        $mess->Name = $name;
+        $mess->Type = $type;
+
+        // set content
+        if ($type !== 'image') {
+            $mess->Message = $content;
+        } else {
+            $mess->Attachment = $content;
+        }
+        $mess->CreatedDate = now()->format("Y-m-d H:i:s");
+        $mess->save();
+        $mess->refresh();
+
+        // return result
+        return $mess;
+    }
 }
