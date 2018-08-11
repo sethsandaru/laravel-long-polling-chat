@@ -77,6 +77,11 @@
                 }
                 // set name and start to retrieve...
                 this.name = this.pre_name;
+
+                // join room mess
+                axios.get(base_url + "api/v1/Message/JoinRoom", {params: {Name: this.name}});
+
+                // start to retrieve..
                 this.retrieveNewMess();
             },
             retrieveNewMess() {

@@ -54,6 +54,18 @@ class MessageController extends Controller
         }
     }
 
+    public function JoinRoom(Request $rq) {
+        $name = $rq->get('Name');
+
+        // post new text
+        $new_mess = new Message;
+        $new_mess->Name = "SethPhat_System";
+        $new_mess->Type = 'system';
+        $new_mess->Message = "User $name has just joined our room.";
+        $new_mess->CreatedDate = now()->format("Y-m-d H:i:s");
+        $new_mess->save();
+    }
+
     public function PostText(Request $rq) {
         $rules = [
             'Name' => 'required',

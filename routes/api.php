@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
+    Route::get('Message/JoinRoom', 'Api\MessageController@JoinRoom');
     Route::get('Message/RetrieveNewMess', 'Api\MessageController@RetrieveNewMess');
 
     Route::post('Message/PostText', 'Api\MessageController@PostText');
